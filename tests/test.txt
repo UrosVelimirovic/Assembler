@@ -1,0 +1,71 @@
+# file: complete_instructions_with_operands.s
+
+#.equ TIM_CFG, 0xFFFFFF10
+#.equ INIT_SP, 0xFFFFFF00
+#.equ CONSTANT, 0x1234
+#.equ MEM_ADDR, 0x1000
+
+.section my_code_main
+.global _start
+
+_start:
+    # Load and store instructions with different operand types
+    ld [%r1], %r1
+   # ld [%r1 + CONSTANT], %sp
+    ld [%r1 + 0xFFFFFF10], %sp
+    #ld $INIT_SP, %sp          # Load immediate value into stack pointer
+    ld $handler, %r1          # Load address of handler into register r1
+    csrwr %r1, %handler       # Write value of r1 into CSR handler
+    ld $0x1, %r1              # Load immediate value 1 into register r1
+    #st %r1, TIM_CFG           # Store value of r1 into memory location TIM_CFG
+    ld my_counter, %r2        # Load address of my_counter into register r2
+    st %r1, my_counter        # Store value of r1 into memory location my_counter
+    #ld $CONSTANT, %r3         # Load immediate value into register r3
+    #st %r3, MEM_ADDR          # Store value of r3 into a specific memory address
+
+    # Arithmetic and logic instructions with different operand types
+    add %r2, %r3         # r3 = r1 + r2
+    sub %r1, %r4         # r4 = r3 - r1
+    .skip 0xA
+    .ascii "0ns"
+    mul %r2, %r5         # r5 = r1 * r2
+    div %r1, %r6         # r6 = r2 / r1
+    not %r1        # r7 = ~r1
+    and %r3, %r5         # r8 = r1 & r2
+    or  %r2, %r5          # r9 = r1 | r2
+    xor %r2, %r5        # r10 = r1 ^ r2
+    shl %r1, %r5         # r11 = r1 << 2
+    shr %r1, %r5         # r12 = r1 >> 2
+
+    # Branch instructions with different operand types
+    call subroutine            # Call subroutine
+    jmp label                  # Jump to label
+   # beq %r1, %r2, equal        # Branch if r1 == r2
+    #bne %r1, %r2, notequal     # Branch if r1 != r2
+    #bgt %r1, %r2, greater      # Branch if r1 > r2
+
+    # Stack operations
+    push %r1                   # Push r1 onto stack
+    pop %r2                    # Pop from stack into r2
+
+    # System instructions
+    halt                       # Halt the program
+    int                   # Software interrupt 3
+    iret                       # Interrupt return
+
+
+    xchg %r1, %r2              # Exchange values of r1 and r2
+
+subroutine:
+    ret                        # Return from subroutine
+
+.global my_counter
+.section my_data
+label:
+handler:
+my_counter:
+    .word 0
+my_dataLabel:
+    .ascii "Hello, World!"     # ASCII directive to store string (Level B)
+
+.end

@@ -1,0 +1,7 @@
+
+.section my_code_main
+
+    ld [%r1], %r1
+    ld [%r1 + 0xFFFFFF10], %sp
+    
+    .end
